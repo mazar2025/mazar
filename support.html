@@ -1,0 +1,2155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الدردشة للعميل</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* الحفاظ على الأنماط السابقة مع إضافة أنماط جديدة */
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --gray: #6c757d;
+            --light: #f8f9fa;
+            --dark: #1d3557;
+            --radius: 16px;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --accent: #4895ef;
+            --google-red: #DB4437;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --color-background-light: #f0f2f5;
+            --color-text-dark: #212121;
+            --color-border-medium-blue: #d0d0d0;
+            --color-admin-message: #e3f2fd;
+            --color-user-message: #f5f5f5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa, #e4e7f1);
+            color: #333;
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        /* زر الرجوع */
+        .back-button {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .back-button:hover {
+            transform: scale(1.1);
+        }
+        
+        /* تنسيقات شاشة القائمة الرئيسية */
+        #mainMenuScreen {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .main-header {
+            background: var(--gradient);
+            color: white;
+            padding: 18px 15px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .page-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
+        .menu-container {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            overflow-y: auto;
+        }
+        
+        .menu-card {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #eef2f7;
+            transition: var(--transition);
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .menu-icon {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .menu-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+        
+        .menu-description {
+            color: var(--gray);
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .menu-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            width: 100%;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            background: var(--gradient);
+            color: white;
+        }
+        
+        .menu-btn i {
+            font-size: 1.2rem;
+        }
+        
+        .contact-btn {
+            background: #25D366;
+        }
+        
+        .phone-btn {
+            background: #4361ee;
+        }
+        
+        .email-btn {
+            background: #DB4437;
+        }
+        
+        .menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0.9;
+        }
+        
+        /* شاشة التحقق */
+        #verificationScreen {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        
+        .verification-overlay {
+            padding: 20px 15px;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="%23f0f5ff" stroke-width="1"/></svg>');
+            background-size: 30px;
+        }
+        
+        .verification-icon {
+            font-size: 3.5rem;
+            color: var(--accent);
+            margin: 15px 0;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .verification-message {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-bottom: 20px;
+            padding: 0 10px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        
+        .verification-error {
+            background: #fff8f8;
+            border: 1px solid var(--danger);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .verification-error h3 {
+            color: var(--danger);
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .verification-error p {
+            margin-bottom: 12px;
+            color: #5c6770;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            width: 100%;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.25);
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(67, 97, 238, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-icon {
+            font-size: 3.5rem;
+            color: var(--success);
+            margin: 15px 0;
+            animation: scaleIn 0.5s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .verification-success {
+            padding: 20px 15px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .user-info {
+            background: #f8f9fa;
+            border-radius: var(--radius);
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #eef2f7;
+        }
+        
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+            background-size: cover;
+            background-position: center;
+            background-color: var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .user-avatar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient);
+            opacity: 0.7;
+            z-index: 1;
+        }
+        
+        .user-avatar i {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .user-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+        
+        .user-email {
+            color: var(--gray);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            direction: ltr;
+            text-align: center;
+        }
+        
+        .user-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        
+        .status-verified {
+            background: rgba(46, 204, 113, 0.15);
+            color: #27ae60;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+        
+        .status-pending {
+            background: rgba(243, 156, 18, 0.15);
+            color: #d35400;
+            border: 1px solid rgba(243, 156, 18, 0.3);
+        }
+        
+        .status-banned {
+            background: rgba(231, 76, 60, 0.15);
+            color: #c0392b;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        
+        /* شاشة الدردشة */
+        #chatScreen {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .chat-header {
+            background: var(--gradient);
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+        }
+        
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo i {
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.2);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        
+        .user-info-chat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .user-avatar-chat {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            background-size: cover;
+            background-position: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .user-name-chat {
+            font-weight: 700;
+            font-size: 1rem;
+            max-width: 100px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .support-header {
+            background: var(--light);
+            padding: 10px 15px;
+            border-bottom: 1px solid #e1e5eb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            z-index: 5;
+        }
+        
+        .support-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        
+        .support-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+            font-weight: 700;
+        }
+        
+        .support-info p {
+            color: var(--gray);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            display: inline-block;
+            box-shadow: 0 0 6px var(--success);
+        }
+        
+        .messages-container {
+            flex: 1;
+            padding: 12px 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #fafbff;
+            background-image: radial-gradient(#e0e7ff 1px, transparent 1px);
+            background-size: 15px 15px;
+        }
+        
+        .message {
+            max-width: 90%;
+            padding: 12px 15px;
+            border-radius: var(--radius);
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message-user {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .message-support {
+            background: white;
+            border: 1px solid #e1e5eb;
+            align-self: flex-start;
+            border-bottom-left-radius: 8px;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .message-sender {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        
+        .message-user .message-sender {
+            color: rgba(255, 255, 255, 0.95);
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .message-support .message-time {
+            color: var(--gray);
+        }
+        
+        .message-user .message-time {
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .message-content {
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+        
+        .input-container {
+            padding: 12px 10px;
+            background: white;
+            border-top: 1px solid #e1e5eb;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #e1e5eb;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            resize: none;
+            height: 50px;
+            font-family: inherit;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .message-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        .send-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.25);
+        }
+        
+        .send-btn:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 3px 10px rgba(67, 97, 238, 0.35);
+        }
+        
+        .no-messages {
+            text-align: center;
+            color: var(--gray);
+            padding: 25px 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            opacity: 0.7;
+        }
+        
+        .no-messages i {
+            font-size: 2.5rem;
+            opacity: 0.3;
+        }
+        
+        .no-messages p {
+            font-size: 1rem;
+            max-width: 100%;
+            line-height: 1.6;
+        }
+        
+        /* طبقة الحظر */
+        .banned-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .banned-icon {
+            font-size: 3.5rem;
+            color: var(--danger);
+            margin-bottom: 15px;
+        }
+        
+        .banned-message {
+            font-size: 1.2rem;
+            color: var(--danger);
+            margin-bottom: 20px;
+            font-weight: 700;
+            max-width: 400px;
+            line-height: 1.6;
+            text-align: center;
+        }
+        
+        .message-input[disabled] {
+            background: #f8f9fa;
+            cursor: not-allowed;
+        }
+        
+        .send-btn[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .send-btn[disabled]:hover {
+            transform: none !important;
+            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.25) !important;
+        }
+        
+        /* تأكيد تسجيل الدخول */
+        .login-confirmation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .confirmation-box {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            max-width: 90%;
+            width: 100%;
+            margin: 0 15px;
+            box-shadow: var(--shadow);
+        }
+        
+        .confirmation-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .confirmation-message {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        /* واجهة الحظر في منطقة الرسائل */
+        .banned-messages-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px 20px;
+            height: 100%;
+        }
+        
+        .banned-messages-view i {
+            font-size: 4rem;
+            color: var(--danger);
+            margin-bottom: 20px;
+        }
+        
+        .banned-messages-view h3 {
+            font-size: 1.5rem;
+            color: var(--danger);
+            margin-bottom: 15px;
+        }
+        
+        .banned-messages-view p {
+            font-size: 1rem;
+            color: var(--gray);
+            max-width: 80%;
+            line-height: 1.7;
+        }
+        
+        .ban-reason {
+            background: #ffebee;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            max-width: 90%;
+            border: 1px solid #ffcdd2;
+            font-size: 0.95rem;
+        }
+        
+        .ban-reason-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #c62828;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* إضافة شاشة المحادثات السابقة */
+        #chatsListScreen {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        
+        .chats-container {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .chat-item {
+            background: white;
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid #eef2f7;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .chat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        
+        .chat-info {
+            flex: 1;
+        }
+        
+        .chat-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+        
+        .chat-status {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-open {
+            color: var(--success);
+        }
+        
+        .status-closed {
+            color: var(--danger);
+        }
+        
+        .chat-preview {
+            color: var(--gray);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        
+        .chat-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .new-chat-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+            z-index: 100;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .new-chat-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* مؤقت المحادثة المغلقة */
+        .chat-timer {
+            text-align: center;
+            padding: 10px;
+            background: #fff8e1;
+            border-radius: var(--radius);
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #d35400;
+            display: none;
+        }
+        
+        .timer-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        /* زر إغلاق المحادثة */
+        .close-chat-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+            box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
+        }
+        
+        .close-chat-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        /* زر حذف المحادثة */
+        .delete-chat-btn {
+            background: #f8f9fa;
+            color: var(--danger);
+            border: 1px solid #ffcdd2;
+            border-radius: 50px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        
+        .delete-chat-btn:hover {
+            background: #ffebee;
+            transform: translateY(-2px);
+        }
+        
+        /* تحسينات للشاشات الصغيرة */
+        @media (max-width: 480px) {
+            .menu-card {
+                padding: 15px;
+            }
+            
+            .menu-icon {
+                font-size: 2.2rem;
+            }
+            
+            .menu-title {
+                font-size: 1.1rem;
+            }
+            
+            .menu-description {
+                font-size: 0.85rem;
+            }
+            
+            .menu-btn {
+                font-size: 0.9rem;
+                padding: 12px;
+            }
+            
+            .chat-header {
+                padding: 10px;
+            }
+            
+            .logo {
+                font-size: 1rem;
+            }
+            
+            .user-name-chat {
+                font-size: 0.9rem;
+                max-width: 80px;
+            }
+            
+            .banned-messages-view i {
+                font-size: 3rem;
+            }
+            
+            .banned-messages-view h3 {
+                font-size: 1.3rem;
+            }
+            
+            .close-chat-btn {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- زر الرجوع -->
+        <button class="back-button" id="backButton" style="display: none;">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <!-- شاشة القائمة الرئيسية -->
+        <div id="mainMenuScreen">
+            <div class="main-header">
+                <h1 class="page-title">مركز الدعم الفني</h1>
+                <p class="page-subtitle">اختر طريقة التواصل المناسبة لك</p>
+            </div>
+            
+            <div class="menu-container">
+                <div class="menu-card">
+                    <div class="menu-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3 class="menu-title">الدردشة المباشرة</h3>
+                    <p class="menu-description">تواصل مع فريق الدعم الفني عبر الدردشة المباشرة لحل مشاكلك بشكل فوري</p>
+                    <div class="menu-buttons">
+                        <button class="menu-btn" id="startChatBtn">
+                            <i class="fas fa-headset"></i> بدأ محادثة جديدة
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="menu-card">
+                    <div class="menu-icon">
+                        <i class="fas fa-comment-alt"></i>
+                    </div>
+                    <h3 class="menu-title">عرض المحادثات</h3>
+                    <p class="menu-description">عرض المحادثات السابقة والجارية مع فريق الدعم</p>
+                    <div class="menu-buttons">
+                        <button class="menu-btn" id="viewChatsBtn">
+                            <i class="fas fa-comments"></i> عرض المحادثات
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="menu-card">
+                    <div class="menu-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h3 class="menu-title">الأسئلة الشائعة</h3>
+                    <p class="menu-description">استعرض الأسئلة الشائعة التي قد توفر لك الحلول دون الحاجة للتواصل مع الدعم</p>
+                    <div class="menu-buttons">
+                        <button class="menu-btn" id="faqBtn">
+                            <i class="fas fa-book-open"></i> عرض الأسئلة
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="menu-card">
+                    <div class="menu-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3 class="menu-title">تواصل معنا مباشرة</h3>
+                    <p class="menu-description">لديك خيارات متعددة للتواصل مع فريق الدعم الفني عبر وسائل التواصل المفضلة لديك</p>
+                    <div class="menu-buttons">
+                        <button class="menu-btn contact-btn" id="whatsappBtn">
+                            <i class="fab fa-whatsapp"></i> واتساب
+                        </button>
+                        <button class="menu-btn phone-btn" id="phoneBtn">
+                            <i class="fas fa-phone"></i> هاتف
+                        </button>
+                        <button class="menu-btn email-btn" id="emailBtn">
+                            <i class="fas fa-envelope"></i> جيميل
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- شاشة التحقق -->
+        <div id="verificationScreen">
+            <div class="main-header">
+                <h1 class="page-title">نظام الدردشة المتكامل</h1>
+                <p class="page-subtitle">تواصل مع فريق الدعم الفني</p>
+            </div>
+            
+            <!-- شاشة التحقق من المستخدم -->
+            <div id="verificationOverlay" class="verification-overlay">
+                <div class="verification-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="verification-message" id="verificationMessage">
+                    جارٍ التحقق من بياناتك وتحميل الدردشة...
+                </div>
+                
+                <div id="loadingSpinner" class="spinner"></div>
+                
+                <div id="verificationError" class="verification-error" style="display: none;">
+                    <h3><i class="fas fa-exclamation-triangle"></i> يجب تسجيل الدخول</h3>
+                    <p id="errorMessage">يجب تسجيل الدخول أولاً لبدء المحادثة مع فريق الدعم</p>
+                    <div class="action-buttons">
+                        <button id="retryButton" class="btn btn-primary">
+                            <i class="fas fa-redo"></i> المحاولة مرة أخرى
+                        </button>
+                        <button id="redirectButton" class="btn btn-outline">
+                            <i class="fas fa-sign-in-alt"></i> الانتقال إلى تسجيل الدخول
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="verificationSuccess" class="verification-success" style="display: none;">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="verification-message">
+                        تم التحقق بنجاح! جارٍ توجيهك إلى الدردشة...
+                    </div>
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatarPreview">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-name" id="userName">جاري التحميل...</div>
+                        <div class="user-email" id="userEmail">جاري التحميل...</div>
+                        <div class="user-status" id="userStatus">
+                            <i class="fas fa-check-circle"></i> حساب مفعل
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- شاشة قائمة المحادثات -->
+        <div id="chatsListScreen">
+            <div class="main-header">
+                <h1 class="page-title">المحادثات السابقة</h1>
+                <p class="page-subtitle">عرض جميع المحادثات مع فريق الدعم</p>
+            </div>
+            
+            <div class="chats-container" id="chatsContainer">
+                <!-- سيتم ملء المحادثات هنا ديناميكياً -->
+            </div>
+            
+            <div class="new-chat-btn" id="newChatBtn">
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+        
+        <!-- شاشة الدردشة -->
+        <div id="chatScreen">
+            <div class="banned-overlay" id="bannedOverlay">
+                <div class="banned-icon">
+                    <i class="fas fa-ban"></i>
+                </div>
+                <div class="banned-message" id="bannedMessage">
+                    تم حظر حسابك من إرسال الرسائل. الرجاء التواصل مع الإدارة.
+                </div>
+                
+                <div class="ban-reason" id="banReasonContainer" style="display: none;">
+                    <div class="ban-reason-title">
+                        <i class="fas fa-info-circle"></i>
+                        <span>سبب الحظر:</span>
+                    </div>
+                    <div id="banReasonText"></div>
+                </div>
+                
+                <button class="btn btn-outline" id="contactAdminBtn">
+                    <i class="fas fa-headset"></i> التواصل مع الإدارة
+                </button>
+            </div>
+            
+            <div class="chat-header">
+                <div class="logo">
+                    <i class="fas fa-headset"></i>
+                    <span>دردشة الدعم الفني</span>
+                </div>
+                <div class="user-info-chat">
+                    <div class="user-avatar-chat" id="userAvatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-name-chat" id="userNameChat">مستخدم</div>
+                    <button class="back-btn" id="backBtn">
+                        <i class="fas fa-arrow-left"></i> الرجوع
+                    </button>
+                    <button class="close-chat-btn" id="closeChatBtn">
+                        <i class="fas fa-times-circle"></i> إغلاق المحادثة
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-container">
+                <div class="support-header">
+                    <div class="support-avatar">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="support-info">
+                        <h3>فريق الدعم الفني</h3>
+                        <p>
+                            <span class="status-dot"></span>
+                            <span id="supportStatus">متصل الآن</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="chat-timer" id="chatTimer">
+                    المحادثة مغلقة. سيتم حذفها بعد: <span class="timer-value" id="countdownTimer">24:00:00</span>
+                </div>
+                
+                <div class="messages-container" id="messagesContainer">
+                    <div class="no-messages" id="noMessages">
+                        <i class="fas fa-comments"></i>
+                        <p>مرحباً بك في نظام الدردشة! كيف يمكننا مساعدتك اليوم؟</p>
+                    </div>
+                </div>
+                
+                <div class="input-container" id="inputContainer">
+                    <textarea class="message-input" id="messageInput" placeholder="اكتب رسالتك هنا..."></textarea>
+                    <button class="send-btn" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- تأكيد تسجيل الدخول -->
+    <div class="login-confirmation" id="loginConfirmation">
+        <div class="confirmation-box">
+            <div class="confirmation-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="confirmation-message">
+                يجب تسجيل الدخول أولاً للاستمرار في استخدام الخدمة
+            </div>
+            <div class="action-buttons">
+                <button id="confirmLoginBtn" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> الانتقال إلى تسجيل الدخول
+                </button>
+                <button id="cancelLoginBtn" class="btn btn-outline">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    
+    <script>
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
+            authDomain: "zio3-8ffdd.firebaseapp.com",
+            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
+            projectId: "zio3-8ffdd",
+            storageBucket: "zio3-8ffdd.firebasestorage.app",
+            messagingSenderId: "560939348415",
+            appId: "1:560939348415:web:c854e9e214e498ad2d310a",
+            measurementId: "G-CVN2B2D0RD"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // عناصر القائمة الرئيسية
+        const mainMenuScreen = document.getElementById('mainMenuScreen');
+        const startChatBtn = document.getElementById('startChatBtn');
+        const viewChatsBtn = document.getElementById('viewChatsBtn');
+        const faqBtn = document.getElementById('faqBtn');
+        const whatsappBtn = document.getElementById('whatsappBtn');
+        const phoneBtn = document.getElementById('phoneBtn');
+        const emailBtn = document.getElementById('emailBtn');
+        
+        // عناصر التحقق
+        const verificationScreen = document.getElementById('verificationScreen');
+        const verificationOverlay = document.getElementById('verificationOverlay');
+        const verificationMessage = document.getElementById('verificationMessage');
+        const verificationError = document.getElementById('verificationError');
+        const errorMessage = document.getElementById('errorMessage');
+        const retryButton = document.getElementById('retryButton');
+        const redirectButton = document.getElementById('redirectButton');
+        const verificationSuccess = document.getElementById('verificationSuccess');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const userAvatarPreview = document.getElementById('userAvatarPreview');
+        const userStatus = document.getElementById('userStatus');
+        const backButton = document.getElementById('backButton');
+        
+        // عناصر قائمة المحادثات
+        const chatsListScreen = document.getElementById('chatsListScreen');
+        const chatsContainer = document.getElementById('chatsContainer');
+        const newChatBtn = document.getElementById('newChatBtn');
+        
+        // عناصر الدردشة
+        const chatScreen = document.getElementById('chatScreen');
+        const userNameChat = document.getElementById('userNameChat');
+        const userAvatar = document.getElementById('userAvatar');
+        const backBtn = document.getElementById('backBtn');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const noMessages = document.getElementById('noMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const inputContainer = document.getElementById('inputContainer');
+        const bannedOverlay = document.getElementById('bannedOverlay');
+        const bannedMessage = document.getElementById('bannedMessage');
+        const contactAdminBtn = document.getElementById('contactAdminBtn');
+        const banReasonContainer = document.getElementById('banReasonContainer');
+        const banReasonText = document.getElementById('banReasonText');
+        const chatTimer = document.getElementById('chatTimer');
+        const countdownTimer = document.getElementById('countdownTimer');
+        const supportStatus = document.getElementById('supportStatus');
+        const closeChatBtn = document.getElementById('closeChatBtn');
+        
+        // متغيرات المستخدم
+        let currentUser = null;
+        let userDisplayName = "مستخدم";
+        let userEmailAddress = "بريد غير معروف";
+        let isFirstMessage = true;
+        let messagesRef = null;
+        let chatInitialized = false;
+        let isUserBanned = false;
+        let userRef = null;
+        let banRef = null;
+        let chatRef = null;
+        let chatId = null;
+        let chatClosedAt = null;
+        let countdownInterval = null;
+        let isChatClosed = false;
+        
+        // زر الرجوع العام
+        backButton.addEventListener('click', () => {
+            if (chatScreen.style.display === 'flex') {
+                chatScreen.style.display = 'none';
+                chatsListScreen.style.display = 'flex';
+                loadChatsList();
+            } else if (verificationScreen.style.display === 'block') {
+                verificationScreen.style.display = 'none';
+                mainMenuScreen.style.display = 'flex';
+            } else if (chatsListScreen.style.display === 'flex') {
+                chatsListScreen.style.display = 'none';
+                mainMenuScreen.style.display = 'flex';
+            }
+        });
+        
+        // زر الرجوع في شاشة الدردشة
+        backBtn.addEventListener('click', () => {
+            chatScreen.style.display = 'none';
+            chatsListScreen.style.display = 'flex';
+            loadChatsList();
+        });
+
+        // زر بدء محادثة جديدة
+        startChatBtn.addEventListener('click', () => {
+            mainMenuScreen.style.display = 'none';
+            verificationScreen.style.display = 'block';
+            verifyUser();
+        });
+        
+        // زر عرض المحادثات
+        viewChatsBtn.addEventListener('click', () => {
+            mainMenuScreen.style.display = 'none';
+            chatsListScreen.style.display = 'flex';
+            loadChatsList();
+        });
+        
+        // زر بدء محادثة جديدة من شاشة المحادثات
+        newChatBtn.addEventListener('click', () => {
+            chatsListScreen.style.display = 'none';
+            verificationScreen.style.display = 'block';
+            verifyUser();
+        });
+        
+        // زر الأسئلة الشائعة
+        faqBtn.addEventListener('click', () => {
+            alert('سيتم فتح صفحة الأسئلة الشائعة قريباً');
+        });
+        
+        // زر واتساب
+        whatsappBtn.addEventListener('click', () => {
+            window.open('https://wa.me/9647823053419', '_blank');
+        });
+        
+        // زر الهاتف
+        phoneBtn.addEventListener('click', () => {
+            window.open('tel:+9647823053419', '_blank');
+        });
+        
+        // زر الجيميل
+        emailBtn.addEventListener('click', () => {
+            window.location.href = 'mailto:kokabmazar@gmail.com?subject=استفسار%20عن%20الخدمة&body=مرحباً%20فريق%20الدعم،';
+        });
+        
+        // زر التواصل مع الإدارة
+        contactAdminBtn.addEventListener('click', () => {
+            window.open('https://wa.me/9647823053419', '_blank');
+        });
+        
+        // زر إغلاق المحادثة
+        closeChatBtn.addEventListener('click', closeCurrentChat);
+        
+        // تحميل قائمة المحادثات
+        function loadChatsList() {
+            chatsContainer.innerHTML = '<div class="spinner"></div>';
+            
+            auth.onAuthStateChanged(user => {
+                if (!user) {
+                    loginConfirmation.style.display = 'flex';
+                    return;
+                }
+                
+                currentUser = user;
+                
+                database.ref('supportChats').orderByChild('userId').equalTo(user.uid).once('value')
+                .then(snapshot => {
+                    chatsContainer.innerHTML = '';
+                    
+                    if (!snapshot.exists()) {
+                        chatsContainer.innerHTML = `
+                            <div class="no-messages">
+                                <i class="fas fa-comments"></i>
+                                <p>لا توجد محادثات سابقة</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    const chats = [];
+                    const now = Date.now();
+                    const twentyFourHours = 24 * 60 * 60 * 1000;
+                    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+                    
+                    snapshot.forEach(chatSnapshot => {
+                        const chat = chatSnapshot.val();
+                        chat.id = chatSnapshot.key;
+                        
+                        // التحقق من الإغلاق التلقائي بعد 24 ساعة من عدم النشاط
+                        if (chat.status === 'open' && now - chat.lastMessageTime > twentyFourHours) {
+                            // تحديث حالة المحادثة إلى مغلقة
+                            database.ref(`supportChats/${chat.id}`).update({
+                                status: 'closed',
+                                closedAt: now
+                            });
+                            chat.status = 'closed';
+                            chat.closedAt = now;
+                        }
+                        
+                        // تجاهل المحادثات المغلقة لأكثر من 7 أيام
+                        if (chat.status === 'closed' && now - chat.closedAt > sevenDays) {
+                            return;
+                        }
+                        
+                        chats.push(chat);
+                    });
+                    
+                    // ترتيب المحادثات من الأحدث إلى الأقدم
+                    chats.sort((a, b) => b.createdAt - a.createdAt);
+                    
+                    chats.forEach(chat => {
+                        const chatItem = document.createElement('div');
+                        chatItem.className = 'chat-item';
+                        chatItem.dataset.id = chat.id;
+                        
+                        const lastMessage = chat.lastMessage || 'لا توجد رسائل بعد';
+                        const status = chat.status || 'open';
+                        const createdAt = new Date(chat.createdAt).toLocaleDateString('ar-EG');
+                        
+                        chatItem.innerHTML = `
+                            <button class="delete-chat-btn" data-id="${chat.id}">
+                                <i class="fas fa-trash-alt"></i> حذف
+                            </button>
+                            <div class="chat-header-info">
+                                <div class="chat-avatar">${userDisplayName.charAt(0)}</div>
+                                <div class="chat-info">
+                                    <div class="chat-title">محادثة الدعم</div>
+                                    <div class="chat-status ${status === 'open' ? 'status-open' : 'status-closed'}">
+                                        <i class="fas fa-circle"></i>
+                                        ${status === 'open' ? 'مفتوحة' : 'مغلقة'}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-preview">${lastMessage}</div>
+                            <div class="chat-meta">
+                                <span>تاريخ البدء: ${createdAt}</span>
+                                <span>${chat.messages ? Object.keys(chat.messages).length : 0} رسالة</span>
+                            </div>
+                        `;
+                        
+                        chatItem.addEventListener('click', () => {
+                            openChat(chat.id);
+                        });
+                        
+                        // إضافة مستمع لحذف المحادثة
+                        const deleteBtn = chatItem.querySelector('.delete-chat-btn');
+                        deleteBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            deleteChat(chat.id);
+                        });
+                        
+                        chatsContainer.appendChild(chatItem);
+                    });
+                })
+                .catch(error => {
+                    chatsContainer.innerHTML = `<div class="verification-error">خطأ في تحميل المحادثات: ${error.message}</div>`;
+                });
+            });
+        }
+        
+        // حذف محادثة
+        function deleteChat(chatId) {
+            if (confirm('هل أنت متأكد أنك تريد حذف هذه المحادثة؟')) {
+                database.ref(`supportChats/${chatId}`).remove()
+                .then(() => {
+                    loadChatsList();
+                })
+                .catch(error => {
+                    alert('حدث خطأ أثناء حذف المحادثة: ' + error.message);
+                });
+            }
+        }
+        
+        // إغلاق المحادثة الحالية
+        function closeCurrentChat() {
+            if (!chatId) return;
+            
+            if (confirm('هل أنت متأكد أنك تريد إغلاق هذه المحادثة؟')) {
+                // تحديث المحادثة في Firebase
+                database.ref(`supportChats/${chatId}`).update({
+                    status: 'closed',
+                    closedAt: Date.now()
+                })
+                .then(() => {
+                    // إظهار رسالة ثم توجيه إلى قائمة المحادثات
+                    alert('تم إغلاق المحادثة بنجاح');
+                    chatScreen.style.display = 'none';
+                    chatsListScreen.style.display = 'flex';
+                    loadChatsList();
+                })
+                .catch(error => {
+                    alert('حدث خطأ أثناء إغلاق المحادثة: ' + error.message);
+                });
+            }
+        }
+        
+        // فتح محادثة
+        function openChat(chatId) {
+            chatsListScreen.style.display = 'none';
+            chatScreen.style.display = 'flex';
+            initChat(chatId);
+        }
+        
+        // التحقق من حالة تسجيل الدخول والبيانات
+        function verifyUser() {
+            verificationMessage.innerHTML = 'جارٍ التحقق من تسجيل الدخول والبيانات...';
+            verificationError.style.display = 'none';
+            verificationSuccess.style.display = 'none';
+            loadingSpinner.style.display = 'block';
+            
+            // التحقق من حالة المصادقة
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    // المستخدم مسجل
+                    currentUser = user;
+                    
+                    // جلب بيانات المستخدم من قاعدة البيانات
+                    userRef = database.ref('users/' + user.uid);
+                    
+                    userRef.once('value').then(snapshot => {
+                        const userData = snapshot.val();
+                        
+                        if (userData) {
+                            // استخدام الاسم الكامل إذا كان متاحاً
+                            userDisplayName = userData.name || user.displayName || "مستخدم";
+                        } else {
+                            // استخدام بيانات من حساب Google
+                            userDisplayName = user.displayName || "مستخدم";
+                        }
+                        
+                        // استخراج الاسم الأول والأخير
+                        const nameParts = userDisplayName.split(' ');
+                        if (nameParts.length > 1) {
+                            userDisplayName = nameParts[0] + ' ' + nameParts[nameParts.length - 1];
+                        }
+                        
+                        userEmailAddress = (userData && userData.email) || user.email || "بريد غير معروف";
+                        
+                        // التحقق من حالة الحظر
+                        checkBanStatus();
+                        
+                    }).catch(error => {
+                        showVerificationError('خطأ في جلب بيانات المستخدم: ' + error.message);
+                    });
+                } else {
+                    // المستخدم غير مسجل
+                    showVerificationError('لم يتم تسجيل الدخول');
+                }
+            });
+        }
+        
+        // التحقق من حالة الحظر
+        function checkBanStatus() {
+            banRef = database.ref(`users/${currentUser.uid}/isBlocked`);
+            
+            banRef.on('value', snapshot => {
+                isUserBanned = snapshot.exists() ? snapshot.val() : false;
+                
+                // التحقق من سبب الحظر
+                if (isUserBanned) {
+                    const banReasonRef = database.ref(`users/${currentUser.uid}/banReason`);
+                    banReasonRef.once('value').then(snap => {
+                        const reason = snap.val() || 'غير محدد';
+                        banReasonText.textContent = reason;
+                        banReasonContainer.style.display = 'block';
+                    });
+                }
+                
+                // التحقق من عدد المحادثات النشطة
+                checkActiveChatsCount();
+            });
+        }
+        
+        // التحقق من عدد المحادثات النشطة
+        function checkActiveChatsCount() {
+            database.ref('supportChats').orderByChild('userId').equalTo(currentUser.uid).once('value')
+            .then(snapshot => {
+                let activeChatsCount = 0;
+                
+                if (snapshot.exists()) {
+                    snapshot.forEach(chatSnapshot => {
+                        const chat = chatSnapshot.val();
+                        if (chat.status === 'open') {
+                            activeChatsCount++;
+                        }
+                    });
+                }
+                
+                if (activeChatsCount >= 3) {
+                    showVerificationError('لقد وصلت للحد الأقصى من المحادثات، الرجاء إغلاق محادثة قبل فتح أخرى.');
+                    return;
+                }
+                
+                // تحديث شاشة التحقق الناجح
+                setTimeout(() => {
+                    loadingSpinner.style.display = 'none';
+                    verificationSuccess.style.display = 'block';
+                    verificationMessage.innerHTML = 'تم التحقق بنجاح! جارٍ توجيهك...';
+                    
+                    // عرض بيانات المستخدم
+                    userName.textContent = userDisplayName;
+                    userEmail.textContent = userEmailAddress;
+                    userAvatarPreview.textContent = userDisplayName.charAt(0);
+                    
+                    // تحديث حالة الحساب
+                    if (isUserBanned) {
+                        userStatus.innerHTML = '<i class="fas fa-ban"></i> حساب محظور';
+                        userStatus.className = 'user-status status-banned';
+                    } else {
+                        userStatus.innerHTML = '<i class="fas fa-check-circle"></i> حساب مفعل';
+                        userStatus.className = 'user-status status-verified';
+                    }
+                    
+                    // توجيه المستخدم بعد تأخير إلى شاشة الدردشة
+                    setTimeout(() => {
+                        createNewChat();
+                    }, 2000);
+                }, 1500);
+            })
+            .catch(error => {
+                showVerificationError('خطأ في جلب عدد المحادثات: ' + error.message);
+            });
+        }
+        
+        // إنشاء محادثة جديدة
+        function createNewChat() {
+            const newChatRef = database.ref('supportChats').push();
+            chatId = newChatRef.key;
+            
+            const chatData = {
+                id: chatId,
+                userId: currentUser.uid,
+                userName: userDisplayName,
+                userEmail: userEmailAddress,
+                status: 'open',
+                createdAt: Date.now(),
+                lastMessage: '',
+                lastMessageTime: Date.now()
+            };
+            
+            newChatRef.set(chatData)
+            .then(() => {
+                showChatScreen();
+            })
+            .catch(error => {
+                showVerificationError('خطأ في إنشاء المحادثة: ' + error.message);
+            });
+        }
+        
+        // إظهار خطأ التحقق
+        function showVerificationError(message) {
+            loadingSpinner.style.display = 'none';
+            verificationError.style.display = 'block';
+            errorMessage.textContent = message;
+        }
+        
+        // إظهار شاشة الدردشة
+        function showChatScreen() {
+            verificationScreen.style.display = 'none';
+            chatScreen.style.display = 'flex';
+            
+            // عرض معلومات المستخدم في شريط الدردشة
+            userNameChat.textContent = userDisplayName;
+            userAvatar.textContent = userDisplayName.charAt(0);
+            
+            // تحديث حالة الحظر
+            updateBanUI();
+        }
+        
+        // تحديث واجهة المستخدم بناءً على حالة الحظر
+        function updateBanUI() {
+            if (isUserBanned) {
+                bannedOverlay.style.display = 'flex';
+                messageInput.disabled = true;
+                sendBtn.disabled = true;
+                
+                // تحديث منطقة الرسائل لتعرض رسالة الحظر فقط
+                messagesContainer.innerHTML = `
+                    <div class="banned-messages-view">
+                        <i class="fas fa-ban"></i>
+                        <h3>تم حظر حسابك</h3>
+                        <p>تم حظر حسابك من قبل فريق الدعم. لم يعد بإمكانك التواصل معنا أو رؤية أي رسائل سابقة.</p>
+                    </div>
+                `;
+                
+                // إخفاء منطقة الإدخال
+                inputContainer.style.display = 'none';
+            } else {
+                bannedOverlay.style.display = 'none';
+                // إظهار منطقة الإدخال
+                inputContainer.style.display = 'flex';
+                
+                // تهيئة الدردشة
+                initChat(chatId);
+            }
+        }
+        
+        // إرسال إشعار إلى Telegram
+        function sendTelegramNotification(messageText) {
+            const botToken = '7912718787:AAH7QxTF2XMH4O3carYa5yGSqyjGz3n89Tc';
+            const chatId = '708957775';
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            
+            // الحصول على الوقت الحالي
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            const dateString = now.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            // إعداد نص الإشعار
+            const notificationText = `
+📨 رسالة جديدة من المستخدم:
+👤 اسم المستخدم: ${userDisplayName}
+📝 الرسالة: ${messageText}
+🕒 الوقت: ${timeString}
+📅 التاريخ: ${dateString}
+            `;
+            
+            const data = {
+                chat_id: chatId,
+                text: notificationText
+            };
+            
+            // إرسال الإشعار عبر API
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('تم إرسال الإشعار إلى Telegram بنجاح:', data);
+            })
+            .catch(error => {
+                console.error('حدث خطأ في إرسال الإشعار إلى Telegram:', error);
+            });
+        }
+        
+        // إرسال رسالة
+        function sendMessage() {
+            if (isUserBanned || isChatClosed) {
+                alert('لا يمكن إرسال رسائل في المحادثات المغلقة أو إذا كنت محظوراً');
+                return;
+            }
+            
+            const messageText = messageInput.value.trim();
+            if (!messageText) return;
+            
+            // إخفاء رسالة "لا توجد رسائل"
+            if (noMessages.style.display !== 'none') {
+                noMessages.style.display = 'none';
+            }
+            
+            // إنشاء كائن الرسالة
+            const message = {
+                text: messageText,
+                type: 'user', // تمييز الرسالة على أنها من المستخدم
+                timestamp: Date.now(),
+                userName: userDisplayName,
+                userId: currentUser.uid
+            };
+            
+            // مسح حقل الإدخال
+            messageInput.value = '';
+            
+            // إرسال الرسالة إلى Firebase
+            sendMessageToFirebase(message);
+            
+            // إرسال إشعار إلى Telegram
+            sendTelegramNotification(messageText);
+            
+            // إرسال رد تلقائي فقط عند أول رسالة
+            if (isFirstMessage) {
+                setTimeout(() => {
+                    sendAutoReply();
+                }, 2000);
+                isFirstMessage = false;
+            }
+        }
+        
+        // إرسال رسالة إلى Firebase
+        function sendMessageToFirebase(message) {
+            const newMessageRef = database.ref(`supportChats/${chatId}/messages`).push();
+            message.id = newMessageRef.key; // إضافة معرف الرسالة
+            newMessageRef.set(message);
+            
+            // تحديث آخر رسالة في المحادثة
+            database.ref(`supportChats/${chatId}`).update({
+                lastMessage: message.text,
+                lastMessageTime: Date.now()
+            });
+        }
+        
+        // إرسال رد تلقائي من الدعم
+        function sendAutoReply() {
+            // الرد التلقائي الأول فقط
+            const reply = "شكراً لتواصلك معنا. كيف يمكننا مساعدتك اليوم؟";
+            
+            // إنشاء كائن الرسالة للدعم
+            const replyMessage = {
+                text: reply,
+                type: 'support', // تمييز الرسالة على أنها من فريق الدعم
+                timestamp: Date.now(),
+                userName: 'فريق الدعم'
+            };
+            
+            // إرسال الرد إلى Firebase
+            sendMessageToFirebase(replyMessage);
+        }
+        
+        // إضافة رسالة إلى واجهة المستخدم
+        function addMessageToUI(msg) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            
+            // تحديد نوع الرسالة (مستخدم أو فريق الدعم)
+            if (msg.type === 'user') {
+                messageDiv.classList.add('message-user');
+            } else {
+                messageDiv.classList.add('message-support');
+            }
+            
+            messageDiv.dataset.id = msg.id || '';
+            
+            const date = new Date(msg.timestamp);
+            const timeString = date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            
+            // تحديد اسم المرسل بناءً على نوع الرسالة
+            let senderName;
+            if (msg.type === 'user') {
+                senderName = msg.userName || 'مستخدم';
+            } else {
+                // عرض اسم "فريق الدعم" لجميع رسائل الدعم
+                senderName = 'فريق الدعم';
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <div class="message-sender">${senderName}</div>
+                </div>
+                <div class="message-content">${msg.text}</div>
+                <div class="message-time">${timeString}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // تحديث المؤقت التنازلي
+        function updateCountdown() {
+            if (!chatClosedAt) return;
+            
+            const now = Date.now();
+            const timeLeft = chatClosedAt + (7 * 24 * 60 * 60 * 1000) - now;
+            
+            if (timeLeft <= 0) {
+                // حذف المحادثة بعد انتهاء الوقت
+                database.ref(`supportChats/${chatId}`).remove();
+                alert('تم حذف المحادثة المغلقة بعد 7 أيام');
+                chatScreen.style.display = 'none';
+                chatsListScreen.style.display = 'flex';
+                loadChatsList();
+                return;
+            }
+            
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            
+            countdownTimer.textContent = `${days} أيام ${hours} ساعات ${minutes} دقائق`;
+        }
+        
+        // تهيئة الدردشة
+        function initChat(chatId) {
+            this.chatId = chatId;
+            chatInitialized = true;
+            
+            messagesContainer.innerHTML = '';
+            noMessages.style.display = 'flex';
+            
+            // إعادة تعيين متغيرات الرسالة
+            isFirstMessage = true;
+            
+            // تحميل بيانات المحادثة
+            chatRef = database.ref(`supportChats/${chatId}`);
+            
+            chatRef.on('value', snapshot => {
+                const chatData = snapshot.val();
+                if (!chatData) return;
+                
+                // تحديث حالة المحادثة
+                const status = chatData.status || 'open';
+                chatClosedAt = chatData.closedAt || null;
+                isChatClosed = status === 'closed';
+                
+                // تحديث واجهة المستخدم بناءً على حالة المحادثة
+                if (isChatClosed) {
+                    chatTimer.style.display = 'block';
+                    messageInput.disabled = true;
+                    sendBtn.disabled = true;
+                    messageInput.placeholder = 'المحادثة مغلقة - لا يمكن إرسال رسائل جديدة';
+                    
+                    // بدء أو تحديث المؤقت التنازلي
+                    if (chatClosedAt) {
+                        if (!countdownInterval) {
+                            countdownInterval = setInterval(updateCountdown, 60000); // تحديث كل دقيقة
+                        }
+                        updateCountdown();
+                    }
+                } else {
+                    chatTimer.style.display = 'none';
+                    messageInput.disabled = false;
+                    sendBtn.disabled = false;
+                    messageInput.placeholder = 'اكتب رسالتك هنا...';
+                    
+                    // إيقاف المؤقت التنازلي إذا كان يعمل
+                    if (countdownInterval) {
+                        clearInterval(countdownInterval);
+                        countdownInterval = null;
+                    }
+                }
+            });
+            
+            messagesRef = database.ref(`supportChats/${chatId}/messages`);
+            
+            // استماع للرسائل الجديدة
+            messagesRef.on('child_added', snapshot => {
+                const msg = snapshot.val();
+                msg.id = snapshot.key;
+                
+                // إضافة الرسالة فقط إذا لم تكن موجودة مسبقاً
+                if (!document.querySelector(`.message[data-id="${msg.id}"]`)) {
+                    addMessageToUI(msg);
+                    
+                    // إخفاء رسالة "لا توجد رسائل" إذا كانت هناك رسائل
+                    if (noMessages.style.display !== 'none') {
+                        noMessages.style.display = 'none';
+                    }
+                }
+            });
+            
+            // استماع لحذف الرسائل
+            messagesRef.on('child_removed', snapshot => {
+                const msgId = snapshot.key;
+                const messageElement = document.querySelector(`.message[data-id="${msgId}"]`);
+                if (messageElement) {
+                    messageElement.remove();
+                    
+                    // إظهار رسالة "لا توجد رسائل" إذا لم يتبق أي رسائل
+                    const messages = document.querySelectorAll('.message');
+                    if (messages.length === 0) {
+                        noMessages.style.display = 'flex';
+                    }
+                }
+            });
+        }
+        
+        // إعداد مستمعي الأحداث للتحقق
+        retryButton.addEventListener('click', verifyUser);
+        redirectButton.addEventListener('click', () => {
+            loginConfirmation.style.display = 'flex';
+        });
+        
+        // تأكيد الانتقال لتسجيل الدخول
+        confirmLoginBtn.addEventListener('click', () => {
+            window.location.href = 'account.html';
+        });
+        
+        // إلغاء الانتقال لتسجيل الدخول
+        cancelLoginBtn.addEventListener('click', () => {
+            loginConfirmation.style.display = 'none';
+        });
+        
+        // مستمعي الأحداث للدردشة
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // تهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', () => {
+            // إظهار القائمة الرئيسية فقط
+            mainMenuScreen.style.display = 'flex';
+            verificationScreen.style.display = 'none';
+            chatScreen.style.display = 'none';
+            chatsListScreen.style.display = 'none';
+            
+            // إعادة تعيين حالة المحادثة
+            chatInitialized = false;
+        });
+    </script>
+</body>
+</html>

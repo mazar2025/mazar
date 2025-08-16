@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الدردشة للعميل</title>
+    <title>نظام الدعم الفني - الدفع عند الاستلام</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        /* الحفاظ على الأنماط السابقة مع إضافة أنماط جديدة */
         :root {
             --primary: #4361ee;
             --secondary: #3f37c9;
@@ -48,9 +47,10 @@
         .container {
             max-width: 100%;
             margin: 0 auto;
+            position: relative;
         }
         
-        /* زر الرجوع */
+        /* زر الرجوع الثابت */
         .back-button {
             position: fixed;
             top: 15px;
@@ -72,6 +72,31 @@
         }
         
         .back-button:hover {
+            transform: scale(1.1);
+        }
+        
+        /* زر رجوع داخلي */
+        .internal-back-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .internal-back-btn:hover {
             transform: scale(1.1);
         }
         
@@ -398,8 +423,8 @@
         .user-name {
             font-size: 1.3rem;
             font-weight: 800;
-            color: var(--dark);
             margin-bottom: 8px;
+            color: var(--dark);
         }
         
         .user-email {
@@ -1012,28 +1037,6 @@
             font-size: 1.1rem;
         }
         
-        /* زر إغلاق المحادثة */
-        .close-chat-btn {
-            background: var(--danger);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 8px 15px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: var(--transition);
-            box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
-        }
-        
-        .close-chat-btn:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-        
         /* زر حذف المحادثة */
         .delete-chat-btn {
             background: #f8f9fa;
@@ -1056,6 +1059,145 @@
         .delete-chat-btn:hover {
             background: #ffebee;
             transform: translateY(-2px);
+        }
+        
+        /* شاشة الأسئلة الشائعة */
+        #faqScreen {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .faq-container {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .faq-item {
+            background: white;
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            border: 1px solid #eef2f7;
+            transition: var(--transition);
+        }
+        
+        .faq-question {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .faq-question i {
+            transition: var(--transition);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            transition: max-height 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+        
+        .faq-search-container {
+            padding: 15px;
+            background: white;
+            border-bottom: 1px solid #e1e5eb;
+        }
+        
+        .faq-search {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5eb;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .faq-search:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        .no-faq-results {
+            text-align: center;
+            padding: 30px 15px;
+            color: var(--gray);
+        }
+        
+        .faq-category {
+            background: #f0f5ff;
+            border-radius: 8px;
+            padding: 8px 15px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        /* بطاقة الدفع عند الاستلام */
+        .cash-on-delivery-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid #eef2f7;
+        }
+        
+        .cash-icon {
+            font-size: 3rem;
+            color: var(--success);
+            margin-bottom: 15px;
+        }
+        
+        .cash-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .cash-description {
+            color: var(--gray);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .cash-features {
+            text-align: right;
+            margin: 15px 0;
+            padding: 0 15px;
+        }
+        
+        .cash-features li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .cash-features i {
+            color: var(--success);
         }
         
         /* تحسينات للشاشات الصغيرة */
@@ -1102,17 +1244,25 @@
                 font-size: 1.3rem;
             }
             
-            .close-chat-btn {
-                padding: 6px 10px;
-                font-size: 0.75rem;
+            .faq-question {
+                font-size: 1rem;
+            }
+            
+            .cash-title {
+                font-size: 1.2rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- زر الرجوع -->
-        <button class="back-button" id="backButton" style="display: none;">
+        <!-- زر الرجوع الثابت -->
+        <button class="back-button" id="globalBackButton" style="display: none;">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <!-- زر رجوع للشاشات الداخلية -->
+        <button class="internal-back-btn" id="internalBackButton" style="display: none;">
             <i class="fas fa-arrow-left"></i>
         </button>
         
@@ -1252,6 +1402,53 @@
             </div>
         </div>
         
+        <!-- شاشة الأسئلة الشائعة -->
+        <div id="faqScreen">
+            <div class="main-header">
+                <h1 class="page-title">الأسئلة الشائعة</h1>
+                <p class="page-subtitle">استعرض الأسئلة الشائعة وإجاباتها</p>
+            </div>
+            
+            <div class="faq-search-container">
+                <input type="text" class="faq-search" id="faqSearch" placeholder="ابحث عن سؤال...">
+            </div>
+            
+            <div class="faq-container" id="faqContainer">
+                <div class="cash-on-delivery-card">
+                    <div class="cash-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3 class="cash-title">الدفع عند الاستلام</h3>
+                    <p class="cash-description">
+                        نقدم لكم خدمة الدفع عند الاستلام حصرياً لضمان راحتكم وأمان معاملاتكم
+                    </p>
+                    
+                    <div class="cash-features">
+                        <ul>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>لا تحتاج لبطاقة ائتمان أو حساب بنكي</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>دفع آمن عند استلام المنتج</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>مراجعة المنتج قبل الدفع</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>لا توجد رسوم إضافية</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- الأسئلة الشائعة -->
+            </div>
+        </div>
+        
         <!-- شاشة الدردشة -->
         <div id="chatScreen">
             <div class="banned-overlay" id="bannedOverlay">
@@ -1287,9 +1484,6 @@
                     <div class="user-name-chat" id="userNameChat">مستخدم</div>
                     <button class="back-btn" id="backBtn">
                         <i class="fas fa-arrow-left"></i> الرجوع
-                    </button>
-                    <button class="close-chat-btn" id="closeChatBtn">
-                        <i class="fas fa-times-circle"></i> إغلاق المحادثة
                     </button>
                 </div>
             </div>
@@ -1349,30 +1543,10 @@
         </div>
     </div>
     
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-    
     <script>
-        // تهيئة Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAG4EKrB3iLEV2hsB8b08ShpSO6PXDnGjg",
-            authDomain: "zio3-8ffdd.firebaseapp.com",
-            databaseURL: "https://zio3-8ffdd-default-rtdb.firebaseio.com",
-            projectId: "zio3-8ffdd",
-            storageBucket: "zio3-8ffdd.firebasestorage.app",
-            messagingSenderId: "560939348415",
-            appId: "1:560939348415:web:c854e9e214e498ad2d310a",
-            measurementId: "G-CVN2B2D0RD"
-        };
-
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
-
-        // عناصر القائمة الرئيسية
+        // تهيئة المتغيرات
+        const globalBackButton = document.getElementById('globalBackButton');
+        const internalBackButton = document.getElementById('internalBackButton');
         const mainMenuScreen = document.getElementById('mainMenuScreen');
         const startChatBtn = document.getElementById('startChatBtn');
         const viewChatsBtn = document.getElementById('viewChatsBtn');
@@ -1380,110 +1554,146 @@
         const whatsappBtn = document.getElementById('whatsappBtn');
         const phoneBtn = document.getElementById('phoneBtn');
         const emailBtn = document.getElementById('emailBtn');
-        
-        // عناصر التحقق
         const verificationScreen = document.getElementById('verificationScreen');
-        const verificationOverlay = document.getElementById('verificationOverlay');
-        const verificationMessage = document.getElementById('verificationMessage');
-        const verificationError = document.getElementById('verificationError');
-        const errorMessage = document.getElementById('errorMessage');
-        const retryButton = document.getElementById('retryButton');
-        const redirectButton = document.getElementById('redirectButton');
-        const verificationSuccess = document.getElementById('verificationSuccess');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const userName = document.getElementById('userName');
-        const userEmail = document.getElementById('userEmail');
-        const userAvatarPreview = document.getElementById('userAvatarPreview');
-        const userStatus = document.getElementById('userStatus');
-        const backButton = document.getElementById('backButton');
-        
-        // عناصر قائمة المحادثات
         const chatsListScreen = document.getElementById('chatsListScreen');
-        const chatsContainer = document.getElementById('chatsContainer');
-        const newChatBtn = document.getElementById('newChatBtn');
-        
-        // عناصر الدردشة
+        const faqScreen = document.getElementById('faqScreen');
         const chatScreen = document.getElementById('chatScreen');
-        const userNameChat = document.getElementById('userNameChat');
-        const userAvatar = document.getElementById('userAvatar');
-        const backBtn = document.getElementById('backBtn');
-        const messagesContainer = document.getElementById('messagesContainer');
-        const noMessages = document.getElementById('noMessages');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const inputContainer = document.getElementById('inputContainer');
-        const bannedOverlay = document.getElementById('bannedOverlay');
-        const bannedMessage = document.getElementById('bannedMessage');
-        const contactAdminBtn = document.getElementById('contactAdminBtn');
-        const banReasonContainer = document.getElementById('banReasonContainer');
-        const banReasonText = document.getElementById('banReasonText');
-        const chatTimer = document.getElementById('chatTimer');
-        const countdownTimer = document.getElementById('countdownTimer');
-        const supportStatus = document.getElementById('supportStatus');
-        const closeChatBtn = document.getElementById('closeChatBtn');
         
-        // متغيرات المستخدم
-        let currentUser = null;
-        let userDisplayName = "مستخدم";
-        let userEmailAddress = "بريد غير معروف";
-        let isFirstMessage = true;
-        let messagesRef = null;
-        let chatInitialized = false;
-        let isUserBanned = false;
-        let userRef = null;
-        let banRef = null;
-        let chatRef = null;
-        let chatId = null;
-        let chatClosedAt = null;
-        let countdownInterval = null;
-        let isChatClosed = false;
+        // أسئلة شائعة محدثة
+        const faqData = [
+            {
+                category: "طرق الدفع",
+                questions: [
+                    {
+                        q: "ما هي طرق الدفع المتاحة؟",
+                        a: "نحن نقدم خدمة الدفع عند الاستلام حصرياً. يمكنك الدفع نقداً عند استلام طلبك."
+                    },
+                    {
+                        q: "هل توجد رسوم إضافية للدفع عند الاستلام؟",
+                        a: "لا توجد أي رسوم إضافية للدفع عند الاستلام. تدفع فقط قيمة المنتجات التي طلبتها."
+                    },
+                    {
+                        q: "هل يمكنني تغيير طريقة الدفع بعد تقديم الطلب؟",
+                        a: "نعم، يمكنك التواصل مع فريق الدعم لتغيير طريقة الدفع إلى الدفع عند الاستلام في أي وقت قبل شحن الطلب."
+                    }
+                ]
+            },
+            {
+                category: "عمليات التوصيل",
+                questions: [
+                    {
+                        q: "ما هي مدة التوصيل المتوقعة؟",
+                        a: "مدة التوصيل تتراوح بين 2-5 أيام عمل حسب موقعك. يمكنك تتبع حالة الشحن من خلال حسابك."
+                    },
+                    {
+                        q: "هل يمكنني اختيار وقت التوصيل؟",
+                        a: "نعم، يمكنك التواصل مع مندوب التوصيل لتحديد الوقت المناسب لك عند استلام الطلب."
+                    },
+                    {
+                        q: "ماذا أفعل إذا لم أستلم طلبي في الموعد المحدد؟",
+                        a: "يمكنك التواصل مع فريق الدعم الفني وسنساعدك في تتبع طلبك وحل أي مشكلة."
+                    }
+                ]
+            },
+            {
+                category: "المنتجات والطلبات",
+                questions: [
+                    {
+                        q: "كيف يمكنني إرجاع منتج؟",
+                        a: "يمكنك إرجاع المنتج خلال 14 يومًا من الاستلام مع الاحتفاظ بالفواتير. سيصلك مندوبنا لاستلام المنتج."
+                    },
+                    {
+                        q: "هل يمكنني تعديل طلب بعد تقديمه؟",
+                        a: "نعم، يمكنك تعديل الطلب قبل شحنه عن طريق التواصل مع فريق الدعم."
+                    },
+                    {
+                        q: "ما هي سياسة الضمان للمنتجات؟",
+                        a: "جميع المنتجات مضمونة لمدة سنة من تاريخ الشراء. يمكنك استبدالها أو صيانتها في مراكز الصيانة المعتمدة."
+                    }
+                ]
+            }
+        ];
+        
+        // إظهار زر الرجوع عند الخروج من الشاشة الرئيسية
+        function showBackButtons() {
+            globalBackButton.style.display = 'flex';
+            internalBackButton.style.display = 'flex';
+        }
+        
+        // إخفاء زر الرجوع عند العودة للشاشة الرئيسية
+        function hideBackButtons() {
+            globalBackButton.style.display = 'none';
+            internalBackButton.style.display = 'none';
+        }
         
         // زر الرجوع العام
-        backButton.addEventListener('click', () => {
+        globalBackButton.addEventListener('click', () => {
             if (chatScreen.style.display === 'flex') {
                 chatScreen.style.display = 'none';
                 chatsListScreen.style.display = 'flex';
-                loadChatsList();
             } else if (verificationScreen.style.display === 'block') {
                 verificationScreen.style.display = 'none';
                 mainMenuScreen.style.display = 'flex';
             } else if (chatsListScreen.style.display === 'flex') {
                 chatsListScreen.style.display = 'none';
                 mainMenuScreen.style.display = 'flex';
+            } else if (faqScreen.style.display === 'flex') {
+                faqScreen.style.display = 'none';
+                mainMenuScreen.style.display = 'flex';
+            }
+            
+            if (mainMenuScreen.style.display === 'flex') {
+                hideBackButtons();
             }
         });
         
-        // زر الرجوع في شاشة الدردشة
-        backBtn.addEventListener('click', () => {
-            chatScreen.style.display = 'none';
-            chatsListScreen.style.display = 'flex';
-            loadChatsList();
+        // زر الرجوع الداخلي
+        internalBackButton.addEventListener('click', () => {
+            if (chatScreen.style.display === 'flex') {
+                chatScreen.style.display = 'none';
+                chatsListScreen.style.display = 'flex';
+            } else if (verificationScreen.style.display === 'block') {
+                verificationScreen.style.display = 'none';
+                mainMenuScreen.style.display = 'flex';
+            } else if (chatsListScreen.style.display === 'flex') {
+                chatsListScreen.style.display = 'none';
+                mainMenuScreen.style.display = 'flex';
+            } else if (faqScreen.style.display === 'flex') {
+                faqScreen.style.display = 'none';
+                mainMenuScreen.style.display = 'flex';
+            }
+            
+            if (mainMenuScreen.style.display === 'flex') {
+                hideBackButtons();
+            }
         });
-
+        
         // زر بدء محادثة جديدة
         startChatBtn.addEventListener('click', () => {
             mainMenuScreen.style.display = 'none';
             verificationScreen.style.display = 'block';
-            verifyUser();
+            showBackButtons();
         });
         
         // زر عرض المحادثات
         viewChatsBtn.addEventListener('click', () => {
             mainMenuScreen.style.display = 'none';
             chatsListScreen.style.display = 'flex';
-            loadChatsList();
+            showBackButtons();
+        });
+        
+        // زر الأسئلة الشائعة
+        faqBtn.addEventListener('click', () => {
+            mainMenuScreen.style.display = 'none';
+            faqScreen.style.display = 'flex';
+            renderFaqs();
+            showBackButtons();
         });
         
         // زر بدء محادثة جديدة من شاشة المحادثات
         newChatBtn.addEventListener('click', () => {
             chatsListScreen.style.display = 'none';
             verificationScreen.style.display = 'block';
-            verifyUser();
-        });
-        
-        // زر الأسئلة الشائعة
-        faqBtn.addEventListener('click', () => {
-            alert('سيتم فتح صفحة الأسئلة الشائعة قريباً');
         });
         
         // زر واتساب
@@ -1501,642 +1711,68 @@
             window.location.href = 'mailto:kokabmazar@gmail.com?subject=استفسار%20عن%20الخدمة&body=مرحباً%20فريق%20الدعم،';
         });
         
-        // زر التواصل مع الإدارة
-        contactAdminBtn.addEventListener('click', () => {
-            window.open('https://wa.me/9647823053419', '_blank');
-        });
-        
-        // زر إغلاق المحادثة
-        closeChatBtn.addEventListener('click', closeCurrentChat);
-        
-        // تحميل قائمة المحادثات
-        function loadChatsList() {
-            chatsContainer.innerHTML = '<div class="spinner"></div>';
+        // عرض الأسئلة الشائعة
+        function renderFaqs(searchTerm = '') {
+            const faqContainer = document.getElementById('faqContainer');
+            // الحفاظ على بطاقة الدفع عند الاستلام
+            const cashCard = faqContainer.querySelector('.cash-on-delivery-card');
+            faqContainer.innerHTML = '';
+            faqContainer.appendChild(cashCard);
             
-            auth.onAuthStateChanged(user => {
-                if (!user) {
-                    loginConfirmation.style.display = 'flex';
-                    return;
-                }
+            let hasResults = false;
+            
+            faqData.forEach(category => {
+                let categoryHasQuestions = false;
+                const categoryEl = document.createElement('div');
+                categoryEl.innerHTML = `<div class="faq-category">${category.category}</div>`;
                 
-                currentUser = user;
-                
-                database.ref('supportChats').orderByChild('userId').equalTo(user.uid).once('value')
-                .then(snapshot => {
-                    chatsContainer.innerHTML = '';
+                category.questions.forEach(qa => {
+                    const questionLower = qa.q.toLowerCase();
+                    const answerLower = qa.a.toLowerCase();
                     
-                    if (!snapshot.exists()) {
-                        chatsContainer.innerHTML = `
-                            <div class="no-messages">
-                                <i class="fas fa-comments"></i>
-                                <p>لا توجد محادثات سابقة</p>
+                    if (!searchTerm || questionLower.includes(searchTerm) || answerLower.includes(searchTerm)) {
+                        const faqItem = document.createElement('div');
+                        faqItem.className = 'faq-item';
+                        
+                        faqItem.innerHTML = `
+                            <div class="faq-question">
+                                ${qa.q}
+                                <i class="fas fa-chevron-down"></i>
                             </div>
-                        `;
-                        return;
-                    }
-                    
-                    const chats = [];
-                    const now = Date.now();
-                    const twentyFourHours = 24 * 60 * 60 * 1000;
-                    const sevenDays = 7 * 24 * 60 * 60 * 1000;
-                    
-                    snapshot.forEach(chatSnapshot => {
-                        const chat = chatSnapshot.val();
-                        chat.id = chatSnapshot.key;
-                        
-                        // التحقق من الإغلاق التلقائي بعد 24 ساعة من عدم النشاط
-                        if (chat.status === 'open' && now - chat.lastMessageTime > twentyFourHours) {
-                            // تحديث حالة المحادثة إلى مغلقة
-                            database.ref(`supportChats/${chat.id}`).update({
-                                status: 'closed',
-                                closedAt: now
-                            });
-                            chat.status = 'closed';
-                            chat.closedAt = now;
-                        }
-                        
-                        // تجاهل المحادثات المغلقة لأكثر من 7 أيام
-                        if (chat.status === 'closed' && now - chat.closedAt > sevenDays) {
-                            return;
-                        }
-                        
-                        chats.push(chat);
-                    });
-                    
-                    // ترتيب المحادثات من الأحدث إلى الأقدم
-                    chats.sort((a, b) => b.createdAt - a.createdAt);
-                    
-                    chats.forEach(chat => {
-                        const chatItem = document.createElement('div');
-                        chatItem.className = 'chat-item';
-                        chatItem.dataset.id = chat.id;
-                        
-                        const lastMessage = chat.lastMessage || 'لا توجد رسائل بعد';
-                        const status = chat.status || 'open';
-                        const createdAt = new Date(chat.createdAt).toLocaleDateString('ar-EG');
-                        
-                        chatItem.innerHTML = `
-                            <button class="delete-chat-btn" data-id="${chat.id}">
-                                <i class="fas fa-trash-alt"></i> حذف
-                            </button>
-                            <div class="chat-header-info">
-                                <div class="chat-avatar">${userDisplayName.charAt(0)}</div>
-                                <div class="chat-info">
-                                    <div class="chat-title">محادثة الدعم</div>
-                                    <div class="chat-status ${status === 'open' ? 'status-open' : 'status-closed'}">
-                                        <i class="fas fa-circle"></i>
-                                        ${status === 'open' ? 'مفتوحة' : 'مغلقة'}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="chat-preview">${lastMessage}</div>
-                            <div class="chat-meta">
-                                <span>تاريخ البدء: ${createdAt}</span>
-                                <span>${chat.messages ? Object.keys(chat.messages).length : 0} رسالة</span>
-                            </div>
+                            <div class="faq-answer">${qa.a}</div>
                         `;
                         
-                        chatItem.addEventListener('click', () => {
-                            openChat(chat.id);
+                        faqItem.addEventListener('click', () => {
+                            faqItem.classList.toggle('active');
                         });
                         
-                        // إضافة مستمع لحذف المحادثة
-                        const deleteBtn = chatItem.querySelector('.delete-chat-btn');
-                        deleteBtn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            deleteChat(chat.id);
-                        });
-                        
-                        chatsContainer.appendChild(chatItem);
-                    });
-                })
-                .catch(error => {
-                    chatsContainer.innerHTML = `<div class="verification-error">خطأ في تحميل المحادثات: ${error.message}</div>`;
-                });
-            });
-        }
-        
-        // حذف محادثة
-        function deleteChat(chatId) {
-            if (confirm('هل أنت متأكد أنك تريد حذف هذه المحادثة؟')) {
-                database.ref(`supportChats/${chatId}`).remove()
-                .then(() => {
-                    loadChatsList();
-                })
-                .catch(error => {
-                    alert('حدث خطأ أثناء حذف المحادثة: ' + error.message);
-                });
-            }
-        }
-        
-        // إغلاق المحادثة الحالية
-        function closeCurrentChat() {
-            if (!chatId) return;
-            
-            if (confirm('هل أنت متأكد أنك تريد إغلاق هذه المحادثة؟')) {
-                // تحديث المحادثة في Firebase
-                database.ref(`supportChats/${chatId}`).update({
-                    status: 'closed',
-                    closedAt: Date.now()
-                })
-                .then(() => {
-                    // إظهار رسالة ثم توجيه إلى قائمة المحادثات
-                    alert('تم إغلاق المحادثة بنجاح');
-                    chatScreen.style.display = 'none';
-                    chatsListScreen.style.display = 'flex';
-                    loadChatsList();
-                })
-                .catch(error => {
-                    alert('حدث خطأ أثناء إغلاق المحادثة: ' + error.message);
-                });
-            }
-        }
-        
-        // فتح محادثة
-        function openChat(chatId) {
-            chatsListScreen.style.display = 'none';
-            chatScreen.style.display = 'flex';
-            initChat(chatId);
-        }
-        
-        // التحقق من حالة تسجيل الدخول والبيانات
-        function verifyUser() {
-            verificationMessage.innerHTML = 'جارٍ التحقق من تسجيل الدخول والبيانات...';
-            verificationError.style.display = 'none';
-            verificationSuccess.style.display = 'none';
-            loadingSpinner.style.display = 'block';
-            
-            // التحقق من حالة المصادقة
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    // المستخدم مسجل
-                    currentUser = user;
-                    
-                    // جلب بيانات المستخدم من قاعدة البيانات
-                    userRef = database.ref('users/' + user.uid);
-                    
-                    userRef.once('value').then(snapshot => {
-                        const userData = snapshot.val();
-                        
-                        if (userData) {
-                            // استخدام الاسم الكامل إذا كان متاحاً
-                            userDisplayName = userData.name || user.displayName || "مستخدم";
-                        } else {
-                            // استخدام بيانات من حساب Google
-                            userDisplayName = user.displayName || "مستخدم";
-                        }
-                        
-                        // استخراج الاسم الأول والأخير
-                        const nameParts = userDisplayName.split(' ');
-                        if (nameParts.length > 1) {
-                            userDisplayName = nameParts[0] + ' ' + nameParts[nameParts.length - 1];
-                        }
-                        
-                        userEmailAddress = (userData && userData.email) || user.email || "بريد غير معروف";
-                        
-                        // التحقق من حالة الحظر
-                        checkBanStatus();
-                        
-                    }).catch(error => {
-                        showVerificationError('خطأ في جلب بيانات المستخدم: ' + error.message);
-                    });
-                } else {
-                    // المستخدم غير مسجل
-                    showVerificationError('لم يتم تسجيل الدخول');
-                }
-            });
-        }
-        
-        // التحقق من حالة الحظر
-        function checkBanStatus() {
-            banRef = database.ref(`users/${currentUser.uid}/isBlocked`);
-            
-            banRef.on('value', snapshot => {
-                isUserBanned = snapshot.exists() ? snapshot.val() : false;
-                
-                // التحقق من سبب الحظر
-                if (isUserBanned) {
-                    const banReasonRef = database.ref(`users/${currentUser.uid}/banReason`);
-                    banReasonRef.once('value').then(snap => {
-                        const reason = snap.val() || 'غير محدد';
-                        banReasonText.textContent = reason;
-                        banReasonContainer.style.display = 'block';
-                    });
-                }
-                
-                // التحقق من عدد المحادثات النشطة
-                checkActiveChatsCount();
-            });
-        }
-        
-        // التحقق من عدد المحادثات النشطة
-        function checkActiveChatsCount() {
-            database.ref('supportChats').orderByChild('userId').equalTo(currentUser.uid).once('value')
-            .then(snapshot => {
-                let activeChatsCount = 0;
-                
-                if (snapshot.exists()) {
-                    snapshot.forEach(chatSnapshot => {
-                        const chat = chatSnapshot.val();
-                        if (chat.status === 'open') {
-                            activeChatsCount++;
-                        }
-                    });
-                }
-                
-                if (activeChatsCount >= 3) {
-                    showVerificationError('لقد وصلت للحد الأقصى من المحادثات، الرجاء إغلاق محادثة قبل فتح أخرى.');
-                    return;
-                }
-                
-                // تحديث شاشة التحقق الناجح
-                setTimeout(() => {
-                    loadingSpinner.style.display = 'none';
-                    verificationSuccess.style.display = 'block';
-                    verificationMessage.innerHTML = 'تم التحقق بنجاح! جارٍ توجيهك...';
-                    
-                    // عرض بيانات المستخدم
-                    userName.textContent = userDisplayName;
-                    userEmail.textContent = userEmailAddress;
-                    userAvatarPreview.textContent = userDisplayName.charAt(0);
-                    
-                    // تحديث حالة الحساب
-                    if (isUserBanned) {
-                        userStatus.innerHTML = '<i class="fas fa-ban"></i> حساب محظور';
-                        userStatus.className = 'user-status status-banned';
-                    } else {
-                        userStatus.innerHTML = '<i class="fas fa-check-circle"></i> حساب مفعل';
-                        userStatus.className = 'user-status status-verified';
+                        categoryEl.appendChild(faqItem);
+                        categoryHasQuestions = true;
+                        hasResults = true;
                     }
-                    
-                    // توجيه المستخدم بعد تأخير إلى شاشة الدردشة
-                    setTimeout(() => {
-                        createNewChat();
-                    }, 2000);
-                }, 1500);
-            })
-            .catch(error => {
-                showVerificationError('خطأ في جلب عدد المحادثات: ' + error.message);
-            });
-        }
-        
-        // إنشاء محادثة جديدة
-        function createNewChat() {
-            const newChatRef = database.ref('supportChats').push();
-            chatId = newChatRef.key;
-            
-            const chatData = {
-                id: chatId,
-                userId: currentUser.uid,
-                userName: userDisplayName,
-                userEmail: userEmailAddress,
-                status: 'open',
-                createdAt: Date.now(),
-                lastMessage: '',
-                lastMessageTime: Date.now()
-            };
-            
-            newChatRef.set(chatData)
-            .then(() => {
-                showChatScreen();
-            })
-            .catch(error => {
-                showVerificationError('خطأ في إنشاء المحادثة: ' + error.message);
-            });
-        }
-        
-        // إظهار خطأ التحقق
-        function showVerificationError(message) {
-            loadingSpinner.style.display = 'none';
-            verificationError.style.display = 'block';
-            errorMessage.textContent = message;
-        }
-        
-        // إظهار شاشة الدردشة
-        function showChatScreen() {
-            verificationScreen.style.display = 'none';
-            chatScreen.style.display = 'flex';
-            
-            // عرض معلومات المستخدم في شريط الدردشة
-            userNameChat.textContent = userDisplayName;
-            userAvatar.textContent = userDisplayName.charAt(0);
-            
-            // تحديث حالة الحظر
-            updateBanUI();
-        }
-        
-        // تحديث واجهة المستخدم بناءً على حالة الحظر
-        function updateBanUI() {
-            if (isUserBanned) {
-                bannedOverlay.style.display = 'flex';
-                messageInput.disabled = true;
-                sendBtn.disabled = true;
+                });
                 
-                // تحديث منطقة الرسائل لتعرض رسالة الحظر فقط
-                messagesContainer.innerHTML = `
-                    <div class="banned-messages-view">
-                        <i class="fas fa-ban"></i>
-                        <h3>تم حظر حسابك</h3>
-                        <p>تم حظر حسابك من قبل فريق الدعم. لم يعد بإمكانك التواصل معنا أو رؤية أي رسائل سابقة.</p>
-                    </div>
+                if (categoryHasQuestions) {
+                    faqContainer.appendChild(categoryEl);
+                }
+            });
+            
+            if (!hasResults && searchTerm) {
+                const noResults = document.createElement('div');
+                noResults.className = 'no-faq-results';
+                noResults.innerHTML = `
+                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <p>لم يتم العثور على نتائج تطابق بحثك</p>
                 `;
-                
-                // إخفاء منطقة الإدخال
-                inputContainer.style.display = 'none';
-            } else {
-                bannedOverlay.style.display = 'none';
-                // إظهار منطقة الإدخال
-                inputContainer.style.display = 'flex';
-                
-                // تهيئة الدردشة
-                initChat(chatId);
+                faqContainer.appendChild(noResults);
             }
         }
         
-        // إرسال إشعار إلى Telegram
-        function sendTelegramNotification(messageText) {
-            const botToken = '7912718787:AAH7QxTF2XMH4O3carYa5yGSqyjGz3n89Tc';
-            const chatId = '708957775';
-            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-            
-            // الحصول على الوقت الحالي
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-            const dateString = now.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            
-            // إعداد نص الإشعار
-            const notificationText = `
-📨 رسالة جديدة من المستخدم:
-👤 اسم المستخدم: ${userDisplayName}
-📝 الرسالة: ${messageText}
-🕒 الوقت: ${timeString}
-📅 التاريخ: ${dateString}
-            `;
-            
-            const data = {
-                chat_id: chatId,
-                text: notificationText
-            };
-            
-            // إرسال الإشعار عبر API
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('تم إرسال الإشعار إلى Telegram بنجاح:', data);
-            })
-            .catch(error => {
-                console.error('حدث خطأ في إرسال الإشعار إلى Telegram:', error);
-            });
-        }
-        
-        // إرسال رسالة
-        function sendMessage() {
-            if (isUserBanned || isChatClosed) {
-                alert('لا يمكن إرسال رسائل في المحادثات المغلقة أو إذا كنت محظوراً');
-                return;
-            }
-            
-            const messageText = messageInput.value.trim();
-            if (!messageText) return;
-            
-            // إخفاء رسالة "لا توجد رسائل"
-            if (noMessages.style.display !== 'none') {
-                noMessages.style.display = 'none';
-            }
-            
-            // إنشاء كائن الرسالة
-            const message = {
-                text: messageText,
-                type: 'user', // تمييز الرسالة على أنها من المستخدم
-                timestamp: Date.now(),
-                userName: userDisplayName,
-                userId: currentUser.uid
-            };
-            
-            // مسح حقل الإدخال
-            messageInput.value = '';
-            
-            // إرسال الرسالة إلى Firebase
-            sendMessageToFirebase(message);
-            
-            // إرسال إشعار إلى Telegram
-            sendTelegramNotification(messageText);
-            
-            // إرسال رد تلقائي فقط عند أول رسالة
-            if (isFirstMessage) {
-                setTimeout(() => {
-                    sendAutoReply();
-                }, 2000);
-                isFirstMessage = false;
-            }
-        }
-        
-        // إرسال رسالة إلى Firebase
-        function sendMessageToFirebase(message) {
-            const newMessageRef = database.ref(`supportChats/${chatId}/messages`).push();
-            message.id = newMessageRef.key; // إضافة معرف الرسالة
-            newMessageRef.set(message);
-            
-            // تحديث آخر رسالة في المحادثة
-            database.ref(`supportChats/${chatId}`).update({
-                lastMessage: message.text,
-                lastMessageTime: Date.now()
-            });
-        }
-        
-        // إرسال رد تلقائي من الدعم
-        function sendAutoReply() {
-            // الرد التلقائي الأول فقط
-            const reply = "شكراً لتواصلك معنا. كيف يمكننا مساعدتك اليوم؟";
-            
-            // إنشاء كائن الرسالة للدعم
-            const replyMessage = {
-                text: reply,
-                type: 'support', // تمييز الرسالة على أنها من فريق الدعم
-                timestamp: Date.now(),
-                userName: 'فريق الدعم'
-            };
-            
-            // إرسال الرد إلى Firebase
-            sendMessageToFirebase(replyMessage);
-        }
-        
-        // إضافة رسالة إلى واجهة المستخدم
-        function addMessageToUI(msg) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
-            
-            // تحديد نوع الرسالة (مستخدم أو فريق الدعم)
-            if (msg.type === 'user') {
-                messageDiv.classList.add('message-user');
-            } else {
-                messageDiv.classList.add('message-support');
-            }
-            
-            messageDiv.dataset.id = msg.id || '';
-            
-            const date = new Date(msg.timestamp);
-            const timeString = date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-            
-            // تحديد اسم المرسل بناءً على نوع الرسالة
-            let senderName;
-            if (msg.type === 'user') {
-                senderName = msg.userName || 'مستخدم';
-            } else {
-                // عرض اسم "فريق الدعم" لجميع رسائل الدعم
-                senderName = 'فريق الدعم';
-            }
-            
-            messageDiv.innerHTML = `
-                <div class="message-header">
-                    <div class="message-sender">${senderName}</div>
-                </div>
-                <div class="message-content">${msg.text}</div>
-                <div class="message-time">${timeString}</div>
-            `;
-            
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-        
-        // تحديث المؤقت التنازلي
-        function updateCountdown() {
-            if (!chatClosedAt) return;
-            
-            const now = Date.now();
-            const timeLeft = chatClosedAt + (7 * 24 * 60 * 60 * 1000) - now;
-            
-            if (timeLeft <= 0) {
-                // حذف المحادثة بعد انتهاء الوقت
-                database.ref(`supportChats/${chatId}`).remove();
-                alert('تم حذف المحادثة المغلقة بعد 7 أيام');
-                chatScreen.style.display = 'none';
-                chatsListScreen.style.display = 'flex';
-                loadChatsList();
-                return;
-            }
-            
-            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            
-            countdownTimer.textContent = `${days} أيام ${hours} ساعات ${minutes} دقائق`;
-        }
-        
-        // تهيئة الدردشة
-        function initChat(chatId) {
-            this.chatId = chatId;
-            chatInitialized = true;
-            
-            messagesContainer.innerHTML = '';
-            noMessages.style.display = 'flex';
-            
-            // إعادة تعيين متغيرات الرسالة
-            isFirstMessage = true;
-            
-            // تحميل بيانات المحادثة
-            chatRef = database.ref(`supportChats/${chatId}`);
-            
-            chatRef.on('value', snapshot => {
-                const chatData = snapshot.val();
-                if (!chatData) return;
-                
-                // تحديث حالة المحادثة
-                const status = chatData.status || 'open';
-                chatClosedAt = chatData.closedAt || null;
-                isChatClosed = status === 'closed';
-                
-                // تحديث واجهة المستخدم بناءً على حالة المحادثة
-                if (isChatClosed) {
-                    chatTimer.style.display = 'block';
-                    messageInput.disabled = true;
-                    sendBtn.disabled = true;
-                    messageInput.placeholder = 'المحادثة مغلقة - لا يمكن إرسال رسائل جديدة';
-                    
-                    // بدء أو تحديث المؤقت التنازلي
-                    if (chatClosedAt) {
-                        if (!countdownInterval) {
-                            countdownInterval = setInterval(updateCountdown, 60000); // تحديث كل دقيقة
-                        }
-                        updateCountdown();
-                    }
-                } else {
-                    chatTimer.style.display = 'none';
-                    messageInput.disabled = false;
-                    sendBtn.disabled = false;
-                    messageInput.placeholder = 'اكتب رسالتك هنا...';
-                    
-                    // إيقاف المؤقت التنازلي إذا كان يعمل
-                    if (countdownInterval) {
-                        clearInterval(countdownInterval);
-                        countdownInterval = null;
-                    }
-                }
-            });
-            
-            messagesRef = database.ref(`supportChats/${chatId}/messages`);
-            
-            // استماع للرسائل الجديدة
-            messagesRef.on('child_added', snapshot => {
-                const msg = snapshot.val();
-                msg.id = snapshot.key;
-                
-                // إضافة الرسالة فقط إذا لم تكن موجودة مسبقاً
-                if (!document.querySelector(`.message[data-id="${msg.id}"]`)) {
-                    addMessageToUI(msg);
-                    
-                    // إخفاء رسالة "لا توجد رسائل" إذا كانت هناك رسائل
-                    if (noMessages.style.display !== 'none') {
-                        noMessages.style.display = 'none';
-                    }
-                }
-            });
-            
-            // استماع لحذف الرسائل
-            messagesRef.on('child_removed', snapshot => {
-                const msgId = snapshot.key;
-                const messageElement = document.querySelector(`.message[data-id="${msgId}"]`);
-                if (messageElement) {
-                    messageElement.remove();
-                    
-                    // إظهار رسالة "لا توجد رسائل" إذا لم يتبق أي رسائل
-                    const messages = document.querySelectorAll('.message');
-                    if (messages.length === 0) {
-                        noMessages.style.display = 'flex';
-                    }
-                }
-            });
-        }
-        
-        // إعداد مستمعي الأحداث للتحقق
-        retryButton.addEventListener('click', verifyUser);
-        redirectButton.addEventListener('click', () => {
-            loginConfirmation.style.display = 'flex';
-        });
-        
-        // تأكيد الانتقال لتسجيل الدخول
-        confirmLoginBtn.addEventListener('click', () => {
-            window.location.href = 'account.html';
-        });
-        
-        // إلغاء الانتقال لتسجيل الدخول
-        cancelLoginBtn.addEventListener('click', () => {
-            loginConfirmation.style.display = 'none';
-        });
-        
-        // مستمعي الأحداث للدردشة
-        sendBtn.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
+        // بحث الأسئلة الشائعة
+        const faqSearch = document.getElementById('faqSearch');
+        faqSearch.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            renderFaqs(searchTerm);
         });
         
         // تهيئة الصفحة عند التحميل
@@ -2146,10 +1782,27 @@
             verificationScreen.style.display = 'none';
             chatScreen.style.display = 'none';
             chatsListScreen.style.display = 'none';
+            faqScreen.style.display = 'none';
             
-            // إعادة تعيين حالة المحادثة
-            chatInitialized = false;
+            // إخفاء أزرار الرجوع
+            hideBackButtons();
         });
+        
+        // رسالة تحذيرية للدفع عند الاستلام
+        setTimeout(() => {
+            const paymentWarning = document.createElement('div');
+            paymentWarning.className = 'verification-error';
+            paymentWarning.style.margin = '20px 0';
+            paymentWarning.innerHTML = `
+                <h3><i class="fas fa-exclamation-triangle"></i> ملاحظة هامة</h3>
+                <p>نظام الدفع عند الاستلام هو الخيار الوحيد المتاح حالياً. لا نقبل أي طرق دفع أخرى.</p>
+            `;
+            
+            const faqContainer = document.getElementById('faqContainer');
+            if (faqContainer) {
+                faqContainer.appendChild(paymentWarning);
+            }
+        }, 3000);
     </script>
 </body>
-</html>
+    </html>
